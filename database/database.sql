@@ -100,4 +100,4 @@ INSERT INTO store_items (name, description, price, item_type) VALUES
 CREATE INDEX idx_user_wins ON users(wins DESC);
 CREATE INDEX idx_session_status ON game_sessions(status);
 CREATE INDEX idx_session_players ON game_sessions(player1_id, player2_id);
-CREATE INDEX idx_messages_session ON chat_messages(session_id);"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -pPASSWORD < "C:\Users\User\Documents\tictactoe\database\database.sql"
+CREATE INDEX idx_messages_session ON chat_messages(session_id);
