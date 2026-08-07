@@ -18,28 +18,34 @@ app.use(express.json());
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 // Database connection pool
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 3306,
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'Gdb_2023',
-  database: process.env.DB_NAME || 'tictactoe_db',
-  waitForConnections: true,
-  connectionLimit: Number(process.env.DB_CONNECTION_LIMIT) || 10,
-  queueLimit: 0,
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 0,
-  connectTimeout: 30000
-});
-// Keep connection alive
+function createPool() {
+  return mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'Gdb_2023',
+    database: process.env.DB_NAME || 'tictactoe_db',
+    waitForConnections: true,
+    connectionLimit: Number(process.env.DB_CONNECTION_LIMIT) || 10,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000,
+    connectTimeout: 30000
+  });
+}
+
+let pool = createPool();
+
+// Ping every 25 seconds to keep connection alive
 setInterval(async () => {
   try {
     await pool.query('SELECT 1');
+    console.log('DB keep-alive ping OK');
   } catch (err) {
-    console.error('Keep-alive query failed:', err);
+    console.error('DB ping failed, recreating pool:', err.message);
+    pool = createPool();
   }
-}, 30000);
-
+}, 25000);
 
 // WebSocket connections storage
 const clients = new Map();
