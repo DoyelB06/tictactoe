@@ -41,7 +41,7 @@ export default function TicTacToeGame() {
     return () => {
       if (wsRef.current) wsRef.current.close();
     };
-  }, [token, view]);
+  }, [token]);
 
   const connectWebSocket = () => {
     const socket = new WebSocket(WS_URL);
